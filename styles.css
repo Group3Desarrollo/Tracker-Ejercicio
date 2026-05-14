@@ -1,0 +1,725 @@
+:root {
+    --bg-color: #191919;
+    --card-bg: #252525;
+    --card-hover: #2c2c2c;
+    --text-primary: #D4D4D4;
+    --text-secondary: #8c8c8c;
+    --border-color: #333333;
+    --primary-color: #ffffff;
+    --primary-text-color: #000000;
+    --green-color: #3b823e;
+    --green-bg: #1e3a20;
+    --red-color: #c44343;
+    --red-bg: #4a1c1c;
+    --blue-color: #5bc0de;
+    --blue-bg: rgba(91, 192, 222, 0.15);
+    --border-radius: 6px;
+    --transition-speed: 0.2s;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Evita que aparezca el cursor de texto al hacer clic en cualquier elemento */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Solo los campos donde realmente se escribe deben tener cursor de texto */
+input,
+textarea,
+[contenteditable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
+    cursor: text;
+}
+
+/* Los botones mantienen el cursor de puntero */
+button,
+.btn,
+.menu-card,
+.day-box,
+.step-checkbox {
+    cursor: pointer;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.view {
+    display: none;
+    width: 100%;
+    max-width: 900px;
+    animation: fadeIn var(--transition-speed) ease;
+}
+
+.view.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+}
+
+h1,
+h2,
+h3 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+/* Formularios y Botones */
+.input-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+input[type="text"],
+input[type="password"] {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color var(--transition-speed);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: var(--text-secondary);
+}
+
+.btn {
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    transition: all var(--transition-speed);
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    width: 100%;
+}
+
+.primary-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.text-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.5rem;
+}
+
+.text-btn:hover {
+    color: var(--text-primary);
+    background-color: var(--card-hover);
+}
+
+/* Vista Login */
+.login-container {
+    max-width: 400px;
+    margin: 10vh auto;
+}
+
+.error-message {
+    color: var(--red-color);
+    text-align: center;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+/* Navegación */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.separator {
+    color: var(--text-secondary);
+}
+
+.current-page {
+    font-weight: 500;
+}
+
+/* Vista Menú */
+.grid-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.menu-card {
+    cursor: pointer;
+    transition: transform var(--transition-speed), background-color var(--transition-speed);
+}
+
+.menu-card:hover:not(.disabled) {
+    transform: translateY(-2px);
+    background-color: var(--card-hover);
+}
+
+.menu-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.menu-card .icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+/* Estado Diario en Menú */
+.daily-status-message {
+    margin-top: 2rem;
+    text-align: center;
+    padding: 1.5rem;
+    transition: all var(--transition-speed);
+}
+
+.daily-status-message h3 {
+    margin-bottom: 0.5rem;
+}
+
+.daily-status-message p {
+    color: var(--text-secondary);
+}
+
+.daily-status-message.status-success {
+    background-color: var(--green-bg);
+    border-color: var(--green-color);
+}
+
+.daily-status-message.status-success h3 {
+    color: var(--green-color);
+}
+
+.daily-status-message.status-success p {
+    color: #a3c2a4;
+    /* un verde más claro para el texto secundario */
+}
+
+.daily-status-message.status-pending {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+/* Vista Tracker */
+.tracker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.month-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.month-selector h2 {
+    margin-bottom: 0;
+    min-width: 140px;
+    text-align: center;
+}
+
+.legend {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.legend-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+.legend-box.green {
+    background-color: var(--green-bg);
+    border: 1px solid var(--green-color);
+}
+
+.legend-box.red {
+    background-color: var(--red-bg);
+    border: 1px solid var(--red-color);
+}
+
+.grid-tracker {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.day-box {
+    aspect-ratio: 1;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--bg-color);
+    transition: all 0.1s ease-in-out;
+    user-select: none;
+    position: relative;
+}
+
+.day-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding-bottom: 0.5rem;
+    user-select: none;
+}
+
+.empty-box {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+}
+
+.day-box:hover {
+    background-color: var(--card-hover);
+}
+
+.day-box.past {
+    background-color: #111111;
+    border-color: #222222;
+}
+
+.day-box.past .day-number {
+    color: #555555;
+}
+
+.day-number {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    position: absolute;
+    top: 4px;
+    left: 6px;
+}
+
+.day-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Estados de las casillas */
+.day-box.status-1 {
+    background-color: var(--green-bg);
+    border-color: var(--green-color);
+    color: var(--green-color);
+}
+
+.day-box.status-1 .day-number {
+    color: var(--green-color);
+}
+
+.day-box.status-2 {
+    background-color: var(--blue-bg);
+    border-color: var(--blue-color);
+    color: var(--blue-color);
+}
+
+.day-box.status-2 .day-number {
+    color: var(--blue-color);
+}
+
+.day-box.status-3 {
+    background-color: var(--red-bg);
+    border-color: var(--red-color);
+    color: var(--red-color);
+}
+
+.day-box.status-3 .day-number {
+    color: var(--red-color);
+}
+
+/* ========================= */
+/* Skin-Care Setup Wizard    */
+/* ========================= */
+.setup-container {
+    text-align: center;
+}
+
+.setup-question {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+.time-range-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.time-range-group input[type="time"] {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    font-size: 1.2rem;
+}
+
+.time-separator {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.setup-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* ========================= */
+/* Skin-Care Day View        */
+/* ========================= */
+.day-progress-container {
+    width: 100%;
+    height: 24px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.day-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--green-color);
+    transition: width 0.5s ease-out;
+}
+
+.day-progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.step-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.step-card {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    gap: 1rem;
+    transition: background-color var(--transition-speed);
+}
+
+.step-card:hover {
+    background-color: var(--card-hover);
+}
+
+.edit-step-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.edit-step-row input[type="text"] {
+    flex-grow: 1;
+}
+
+.edit-step-row input[type="time"] {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+}
+
+.delete-step-btn {
+    color: var(--red-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+}
+
+.delete-step-btn:hover {
+    color: #ff6b6b;
+}
+
+.step-progress-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.step-progress-battery-top {
+    width: 6px;
+    height: 3px;
+    background-color: var(--text-secondary);
+    border-radius: 2px 2px 0 0;
+}
+
+.step-progress-wrapper {
+    width: 20px;
+    height: 30px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--text-secondary);
+    border-radius: 2px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    padding: 1px;
+}
+
+.step-progress-fill {
+    width: 100%;
+    background-color: var(--green-color);
+    transition: height 1s linear, background-color 0.5s ease;
+    border-radius: 1px;
+}
+
+.step-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.step-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+.step-time {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.step-checkbox {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all var(--transition-speed);
+    background-color: var(--bg-color);
+}
+
+.step-checkbox:hover {
+    border-color: var(--text-primary);
+}
+
+.step-checkbox.checked {
+    background-color: var(--green-bg);
+    border-color: var(--green-color);
+}
+
+.step-checkbox.checked::after {
+    content: '';
+    width: 14px;
+    height: 14px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%233b823e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.step-wrapper.failed .step-card {
+    border-color: var(--red-color);
+}
+
+.step-wrapper.failed .step-name,
+.step-wrapper.failed .step-time {
+    color: var(--red-color);
+}
+
+.step-wrapper.failed .step-progress-wrapper {
+    border-color: var(--red-color);
+}
+
+.step-wrapper.failed .step-progress-battery-top {
+    background-color: var(--red-color);
+}
+
+.step-wrapper.failed .step-progress-fill {
+    height: 0% !important;
+}
+
+.step-wrapper.failed .step-checkbox {
+    border-color: var(--red-color);
+    background-color: transparent;
+    cursor: not-allowed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.step-wrapper.failed .step-checkbox::after {
+    content: '';
+    width: 14px;
+    height: 14px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%23c44343" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    .card {
+        padding: 1.25rem;
+    }
+
+    .grid-tracker {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.25rem;
+    }
+
+    .day-name {
+        font-size: 0.7rem;
+        padding-bottom: 0.25rem;
+    }
+
+    .day-number {
+        font-size: 0.7rem;
+        top: 2px;
+        left: 4px;
+    }
+
+    .day-icon {
+        font-size: 1.1rem;
+        margin-top: 12px;
+    }
+
+    .tracker-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .month-selector {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .month-selector h2 {
+        font-size: 1.2rem;
+        min-width: auto;
+    }
+
+    .legend {
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker de Ejercicios</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="theme-color" content="#238636">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mi Espacio">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('[SW] Registrado:', reg.scope))
+                .catch(err => console.error('[SW] Error de registro:', err));
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- Vista: Login -->
+    <div id="login-view" class="view active">
+        <div class="login-container card">
+            <h1>Bienvenido</h1>
+            <p class="subtitle">Inicia sesión en tu espacio de trabajo</p>
+            <div class="input-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" placeholder="Ingresa tu usuario">
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="Ingresa tu contraseña">
+            </div>
+            <p id="login-error" class="error-message" style="display: none;">Usuario o contraseña incorrectos.</p>
+            <button id="login-btn" class="btn primary-btn">Entrar</button>
+        </div>
+    </div>
+
+    <!-- Vista: Menú Principal -->
+    <div id="menu-view" class="view">
+        <div class="top-nav">
+            <span class="nav-title">Mi Espacio</span>
+            <button id="logout-btn" class="btn text-btn">Cerrar Sesión</button>
+        </div>
+        <div class="menu-container">
+            <h1>Menú Principal</h1>
+            <div class="grid-menu">
+                <div class="menu-card card" id="nav-tracker">
+                    <span class="icon">🏋️</span>
+                    <h3>Seguimiento de Ejercicio</h3>
+                    <p>Registra tus rutinas diarias</p>
+                </div>
+                <div class="menu-card card" id="nav-skincare">
+                    <span class="icon">✨</span>
+                    <h3>Skin-Care</h3>
+                    <p>Tu rutina diaria</p>
+                </div>
+                <div class="menu-card card disabled">
+                    <span class="icon">🥗</span>
+                    <h3>Nutrición</h3>
+                    <p>Próximamente</p>
+                </div>
+            </div>
+
+            <div id="daily-status-container" class="daily-status-message card" style="display: none;">
+                <h3 id="daily-status-title">Estado de Hoy</h3>
+                <p id="daily-status-desc">Comprobando...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista: Seguimiento de Ejercicios -->
+    <div id="tracker-view" class="view">
+        <div class="top-nav">
+            <div class="breadcrumb">
+                <button id="back-to-menu" class="btn text-btn">← Volver al Menú</button>
+                <span class="separator">/</span>
+                <span class="current-page">Seguimiento de Ejercicio</span>
+            </div>
+        </div>
+        <div class="tracker-container card">
+            <div class="tracker-header">
+                <div class="month-selector">
+                    <button id="prev-month" class="btn text-btn">❮</button>
+                    <h2 id="current-month-display">Mes</h2>
+                    <button id="next-month" class="btn text-btn">❯</button>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-box green"></div> Hecho
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box red"></div> No Hecho
+                    </div>
+                </div>
+            </div>
+            <div class="grid-tracker" id="tracker-grid">
+                <!-- Los días se generan con JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista: Configuración Skin-Care (Wizard) -->
+    <div id="skincare-setup-view" class="view">
+        <div class="top-nav">
+            <div class="breadcrumb">
+                <button id="back-from-skincare-setup" class="btn text-btn">← Volver al Menú</button>
+                <span class="separator">/</span>
+                <span class="current-page">Skin-Care</span>
+            </div>
+        </div>
+        <div class="setup-container card">
+            <h2>Personaliza tu rutina...</h2>
+            <h3 id="setup-question" class="setup-question">¿Con qué empezarás?</h3>
+            <div class="input-group">
+                <input type="text" id="skincare-step-name" placeholder="Ej. Crema hidratante" autocomplete="off">
+            </div>
+            <div class="time-range-group">
+                <input type="time" id="skincare-step-start">
+                <span class="time-separator">-</span>
+                <input type="time" id="skincare-step-end">
+            </div>
+            <p id="setup-error" class="error-message" style="display: none;">Por favor completa todos los campos
+                correctamente.</p>
+            <div class="setup-actions">
+                <button id="setup-next-btn" class="btn primary-btn">Siguiente</button>
+                <button id="setup-finish-btn" class="btn text-btn" style="display: none;">Terminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista: Calendario Skin-Care -->
+    <div id="skincare-tracker-view" class="view">
+        <div class="top-nav">
+            <div class="breadcrumb">
+                <button id="back-from-skincare-tracker" class="btn text-btn">← Volver al Menú</button>
+                <span class="separator">/</span>
+                <span class="current-page">Skin-Care</span>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 10px;">
+                <button id="enable-notifications-btn" class="btn text-btn"
+                    style="color: #ff9800; font-size: 0.8rem; display: none;">🔔 Alertas</button>
+                <button id="edit-skincare-btn" class="btn text-btn"
+                    style="color: var(--primary-color); font-size: 0.8rem;">Editar Rutina</button>
+            </div>
+        </div>
+        <div class="tracker-container card">
+            <div class="tracker-header">
+                <div class="month-selector">
+                    <button id="skincare-prev-month" class="btn text-btn">❮</button>
+                    <h2 id="skincare-current-month-display">Mes</h2>
+                    <button id="skincare-next-month" class="btn text-btn">❯</button>
+                </div>
+            </div>
+            <div class="grid-tracker" id="skincare-tracker-grid">
+                <!-- Los días se generan con JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista: Día Específico Skin-Care -->
+    <div id="skincare-day-view" class="view">
+        <div class="top-nav">
+            <div class="breadcrumb">
+                <button id="back-to-skincare-tracker" class="btn text-btn">← Volver al Calendario</button>
+                <span class="separator">/</span>
+                <span id="skincare-day-title" class="current-page">Día</span>
+            </div>
+        </div>
+        <div class="day-container card">
+            <div class="day-progress-container">
+                <div id="skincare-day-progress-bar" class="day-progress-bar"></div>
+                <span id="skincare-day-progress-text" class="day-progress-text">0%</span>
+            </div>
+            <div id="skincare-steps-list" class="steps-list">
+                <!-- Pasos generados por JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Vista: Editar Rutina Skin-Care -->
+    <div id="skincare-edit-view" class="view">
+        <div class="top-nav">
+            <div class="breadcrumb">
+                <button id="back-from-skincare-edit" class="btn text-btn">← Volver al Calendario</button>
+                <span class="separator">/</span>
+                <span class="current-page">Editar Rutina</span>
+            </div>
+            <button id="reset-skincare-btn" class="btn text-btn"
+                style="color: var(--red-color); font-size: 0.8rem;">Eliminar Todo</button>
+        </div>
+        <div class="edit-container card">
+            <h2>Edita tu rutina</h2>
+            <div id="skincare-edit-list" class="steps-list" style="margin-bottom: 2rem;">
+                <!-- Lista de edicion en JS -->
+            </div>
+            <button id="skincare-edit-add-btn" class="btn text-btn" style="margin-bottom: 2rem;">+ Añadir Paso</button>
+            <p id="edit-error" class="error-message" style="display: none;">Campos inválidos o necesitas al menos 4
+                pasos.</p>
+            <button id="skincare-edit-save-btn" class="btn primary-btn">Guardar Cambios</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
